@@ -1,0 +1,25 @@
+{
+  "name": "maps-admin-panel",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "MAPS 2026 Admin Panel - production-ready React admin for form submissions",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.8"
+  }
+}

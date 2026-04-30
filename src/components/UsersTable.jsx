@@ -303,9 +303,14 @@ export default function UsersTable() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((row) => (
+                {filtered.map((row, idx) => (
                   <tr
-                    key={row.id || row.email || `${row.first_name}-${row.last_name}`}
+                    key={[
+                      row.id ?? 'no-id',
+                      row.email ?? 'no-email',
+                      row.created_at ?? 'no-created-at',
+                      idx
+                    ].join(':')}
                     className="subs-row"
                     onClick={() => row.id && navigate(`/users/${row.id}`)}
                     role="button"

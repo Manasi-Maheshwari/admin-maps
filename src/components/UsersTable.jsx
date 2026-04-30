@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDebounce } from '../hooks/useDebounce.js';
 import { useUsers } from '../hooks/useUsers.js';
-import { deleteUser } from '../services/supabase.js';
 import { compareValues, formatDate, fullName } from '../utils/data.js';
 import Spinner from './Spinner.jsx';
 import './SubmissionsTable.css';
@@ -18,8 +17,6 @@ export default function UsersTable() {
     organization: ''
   });
   const [sort, setSort] = useState({ key: 'created_at', direction: 'desc' });
-  const [busyId, setBusyId] = useState(null);
-  const [actionError, setActionError] = useState('');
 
   const users = useMemo(() => data || [], [data]);
   const filterOptions = useMemo(() => {
@@ -124,25 +121,6 @@ export default function UsersTable() {
     URL.revokeObjectURL(url);
   }
 
-  async function handleDelete(row) {
-    if (!row?.id) {
-      setActionError('Cannot delete this row because it has no ID.');
-      return;
-    }
-    const ok = window.confirm(`Delete ${fullName(row)}? This cannot be undone.`);
-    if (!ok) return;
-    setActionError('');
-    setBusyId(row.id);
-    try {
-      await deleteUser(row.id);
-      await refetch();
-    } catch (err) {
-      setActionError(err?.message || 'Failed to delete user');
-    } finally {
-      setBusyId(null);
-    }
-  }
-
   return (
     <section className="subs">
       <div className="subs-toolbar">
@@ -222,12 +200,6 @@ export default function UsersTable() {
           </div>
         </div>
       </div>
-      {actionError && (
-        <div className="subs-error" style={{ minHeight: 'auto', padding: 12 }}>
-          <p className="subs-error__text">{actionError}</p>
-        </div>
-      )}
-
       <div className="subs__panel">
         {error ? (
           <div className="subs-error">
@@ -299,7 +271,6 @@ export default function UsersTable() {
                     sort={sort}
                     onToggle={toggleSort}
                   />
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -334,18 +305,6 @@ export default function UsersTable() {
                       <PackageBadge tier={row.package_tier} />
                     </td>
                     <td className="mono">{formatDate(row.created_at)}</td>
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <div className="users-table__actions">
-                        <button
-                          type="button"
-                          className="subs-btn subs-btn--ghost users-table__delete"
-                          onClick={() => handleDelete(row)}
-                          disabled={!row.id || busyId === row.id}
-                        >
-                          {busyId === row.id ? 'Deleting...' : 'Delete'}
-                        </button>
-                      </div>
-                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../components/Spinner.jsx';
-import { deleteUser, fetchUserById } from '../services/supabase.js';
+import { fetchUserById } from '../services/supabase.js';
 import { formatDate, fullName } from '../utils/data.js';
 import './UserDetails.css';
 
@@ -11,8 +11,6 @@ export default function UserDetails() {
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [actionError, setActionError] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -36,40 +34,13 @@ export default function UserDetails() {
     };
   }, [id]);
 
-  async function handleDelete() {
-    if (!row?.id) return;
-    const ok = window.confirm(`Delete ${fullName(row)}? This cannot be undone.`);
-    if (!ok) return;
-    setBusy(true);
-    setActionError('');
-    try {
-      await deleteUser(row.id);
-      navigate('/dashboard', { replace: true });
-    } catch (err) {
-      setActionError(err?.message || 'Failed to delete record');
-      setBusy(false);
-    }
-  }
-
   return (
     <section className="user-details">
       <div className="user-details__head">
         <button type="button" className="subs-btn subs-btn--ghost" onClick={() => navigate('/dashboard')}>
           Back to users
         </button>
-        {!loading && row && (
-          <div className="user-details__actions">
-            <button type="button" className="subs-btn user-details__delete" onClick={handleDelete} disabled={busy}>
-              {busy ? 'Deleting...' : 'Delete'}
-            </button>
-          </div>
-        )}
       </div>
-      {actionError && (
-        <div className="subs-error">
-          <p className="subs-error__text">{actionError}</p>
-        </div>
-      )}
 
       {loading ? (
         <div className="user-details__state">

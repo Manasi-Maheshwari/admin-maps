@@ -3,8 +3,8 @@
  * Credentials are hardcoded per spec; sessions persist in localStorage.
  */
 
-const ADMIN_EMAIL = '<REDACTED_EMAIL>';
-const ADMIN_PASSWORD = '<REDACTED_PASSWORD>';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
 const STORAGE_KEY = 'maps_admin_session';
 const AUTH_EVENT = 'maps_admin_auth_changed';
 
@@ -14,6 +14,8 @@ const AUTH_EVENT = 'maps_admin_auth_changed';
 export function login(email, password) {
   const normalizedEmail = String(email || '').trim().toLowerCase();
   const normalizedPassword = String(password || '');
+
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) return null;
 
   if (
     normalizedEmail === ADMIN_EMAIL.toLowerCase() &&
@@ -69,4 +71,3 @@ function notifyAuthChange() {
 }
 
 export { AUTH_EVENT };
-

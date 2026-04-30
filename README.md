@@ -104,12 +104,12 @@ npm run preview
 
 ## Login Credentials
 
-These are hardcoded per spec:
+Set these in `.env.local` (or Vercel env vars) to log in:
 
-| Field    | Value                          |
-| -------- | ------------------------------ |
-| Email    | `<REDACTED_EMAIL>`     |
-| Password | `<REDACTED_PASSWORD>`            |
+| Field      | Env var               |
+| ---------- | --------------------- |
+| Email      | `VITE_ADMIN_EMAIL`    |
+| Password   | `VITE_ADMIN_PASSWORD` |
 
 Sessions are stored in `localStorage` under `maps_admin_session`. Logout clears the key and redirects to `/login`. All `/dashboard` routes require an active session.
 
@@ -171,4 +171,3 @@ using (true);
 - Styling is hand-authored CSS; no Tailwind or component library required.
 - Fonts (Fraunces, Inter, JetBrains Mono) are loaded via Google Fonts in `index.html`.
 - The Supabase client is configured with `persistSession: false` because the admin session is managed independently — the table is read using the anon key only.
-

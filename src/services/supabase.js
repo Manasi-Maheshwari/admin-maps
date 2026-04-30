@@ -89,12 +89,19 @@ export async function updateUser(id, updates) {
 }
 
 export async function deleteUser(id) {
-  const { error } = await supabase
-    .from(USERS_TABLE)
-    .delete()
-    .eq('id', id);
+  const res = await fetch(`/api/users/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: { accept: 'application/json' }
+  });
 
-  if (error) {
-    throw new Error(error.message || 'Failed to delete user');
+  if (res.ok) return;
+
+  let message = 'Failed to delete user';
+  try {
+    const body = await res.json();
+    if (body?.error) message = body.error;
+  } catch {
+    // ignore
   }
+  throw new Error(message);
 }
